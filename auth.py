@@ -1,0 +1,64 @@
+class User:
+    def __init__(self, username, password, role):
+        self.username, self.password, self.role = username, password, role
+
+    def display_dashboard(self):
+        access = {
+            "admin": "Full system control.",
+            "teacher": "Manage courses, grade students.",
+            "student": "View courses, submit assignments."
+        }.get(self.role, "Unknown role.")
+        print(f"\nWelcome, {self.username}!\nAccess: {access}")
+
+
+class AuthSystem:
+    def __init__(self):
+        self.users_db = {}
+
+    def signup(self):
+        print("\n--- Sign Up ---")
+        try:
+            username = input("Enter a new username: ").strip()
+            if username in self.users_db:
+                raise ValueError("Username already exists.")
+            role = input("Choose role (admin/teacher/student): ").strip().lower()
+            if role not in {"admin", "teacher", "student"}:
+                raise ValueError("Invalid role provided.")
+            self.users_db[username] = User(username, input("Enter a password: ").strip(), role)
+            print(f"User '{username}' registered successfully as '{role}'.")
+        except ValueError as ve:
+            print(f"Error: {ve}")
+        finally:
+            print("Signup process completed.")
+
+    def login(self):
+        print("\n--- Log In ---")
+        try:
+            user = self.users_db.get((username := input("Username: ").strip()))
+            if not user or user.password != (password := input("Password: ").strip()):
+                raise Exception("Invalid credentials" if user else "Username does not exist")
+            print("Login successful!")
+            user.display_dashboard()
+        except Exception as e:
+            print(f"Error: {e}")
+        finally:
+            print("Login attempt finished.")
+
+
+def main():
+    system = AuthSystem()
+    while True:
+        print("\n==== AUTH MENU ====\n1. Sign Up\n2. Log In\n3. Exit")
+        try:
+            if (choice := int(input("Choose an option: "))) == 3:
+                print("Goodbye!")
+                break
+            [system.signup, system.login][choice-1]() if choice in (1,2) else print("Invalid choice.")
+        except ValueError:
+            print("Please enter a valid number (1-3).")
+        finally:
+            print("-" * 30)
+
+
+if __name__ == "__main__":
+    main()
