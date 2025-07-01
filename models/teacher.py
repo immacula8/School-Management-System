@@ -8,6 +8,8 @@
 
 
 class Teacher:
+    valid_keys = ['teacher_name', 'date_employed', 'subject', 'job_description', 'email', 'phone_number', 'address', 'rating']
+
     def __init__(self, teacher_id, teacher_name, date_employed, subject, job_description, email, phone_number, address, rating):
         self.teacher_id = teacher_id
         self.subject = subject
@@ -31,5 +33,11 @@ class Teacher:
                 "address": self.address,
                 "rating": self.rating
             }
+    def update_info(self, **kwargs):
+        """Update teacher's information with provided keyword arguments."""
+        for key, value in kwargs.items():
+            if key in self.__class__.valid_keys and hasattr(self, key):
+                setattr(self, key, value)
+
     def __str__(self):
         return f"{self.teacher_name}, teaches {self.subject}. Job Description: {self.job_description}, Email: {self.email}, Rating: {self.rating}"
